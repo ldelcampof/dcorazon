@@ -36,7 +36,7 @@ class ProductsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $product_id = null)
     {
         $data = $request->all();
         $dataProduct = (array) json_decode($data['product']);
@@ -47,7 +47,12 @@ class ProductsController extends Controller
         $file = $request->filefoto->store($destinationPath);
         $path = str_replace('public/', 'storage/', $file);
 
-        $product = new Product($dataProduct);
+        if($product_id == null){
+            $product = new Product($dataProduct);
+        }else{
+            $product = Product::find($product_id);
+        }
+
         $product->foto = $path;
         $product->save();
 
@@ -97,6 +102,6 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Product::destroy($id);
     }
 }

@@ -24,3 +24,4 @@ Route::resource('product', 'ProductsController', ['only' => [
 	'destroy',
 	'show'
 ]]);
+Route::post('update/product/{product_id}', ['uses' => 'ProductsController@store']);

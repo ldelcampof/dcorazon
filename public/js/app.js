@@ -1805,12 +1805,55 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             data: new FormData(),
             errors: {},
+            editProduct: {
+                nombre: '',
+                descripcion: '',
+                categoria: '',
+                talla: '',
+                foto: ''
+            },
             product: {
                 nombre: '',
                 descripcion: '',
@@ -1838,6 +1881,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         openCreate: function openCreate() {
             $('#addProduct').modal('show');
         },
+        openEdit: function openEdit(product) {
+            this.editProduct = JSON.parse(JSON.stringify(product));
+            $('#editProduct').modal('show');
+        },
         storeProduct: function storeProduct() {
             var _this2 = this;
 
@@ -1858,6 +1905,42 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     _this2.errors = _.flatten(_.toArray(errors.response.data));
                 } else {
                     _this2.errors = ['Algo salió mal'];
+                }
+            });
+        },
+        updateProduct: function updateProduct() {
+            var _this3 = this;
+
+            this.data.append('product', JSON.stringify(this.editProduct));
+            axios.post(url + 'api/update/product/' + this.editProduct.id, this.data).then(function (response) {
+                _this3.editProduct = {
+                    nombre: '',
+                    descripcion: '',
+                    categoria: '',
+                    talla: '',
+                    foto: ''
+                };
+                _this3.data = new FormData();
+                $('.modal').modal('hide');
+                _this3.getProducts();
+            }).catch(function (errors) {
+                if (_typeof(errors.response.data) === 'object') {
+                    _this3.errors = _.flatten(_.toArray(errors.response.data));
+                } else {
+                    _this3.errors = ['Algo salió mal'];
+                }
+            });
+        },
+        remove: function remove(product) {
+            var _this4 = this;
+
+            axios.delete(url + 'api/product/' + product.id).then(function (response) {
+                _this4.getProducts();
+            }).catch(function (errors) {
+                if (_typeof(errors.response.data) === 'object') {
+                    _this4.errors = _.flatten(_.toArray(errors.response.data));
+                } else {
+                    _this4.errors = ['Algo salió mal'];
                 }
             });
         }
@@ -31939,7 +32022,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "src": product.foto
       }
-    })]), _vm._v(" "), _c('td')])
+    })]), _vm._v(" "), _c('td', [_c('i', {
+      staticClass: "glyphicon glyphicon-pencil",
+      on: {
+        "click": function($event) {
+          _vm.openEdit(product)
+        }
+      }
+    }), _vm._v(" "), _c('i', {
+      staticClass: "glyphicon glyphicon-trash",
+      on: {
+        "click": function($event) {
+          _vm.remove(product)
+        }
+      }
+    })])])
   }))]), _vm._v(" "), _c('div', {
     staticClass: "modal fade",
     attrs: {
@@ -32112,6 +32209,178 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.storeProduct
     }
+  }, [_vm._v("Guardar")])])])])]), _vm._v(" "), _c('div', {
+    staticClass: "modal fade",
+    attrs: {
+      "tabindex": "-1",
+      "role": "dialog",
+      "id": "editProduct"
+    }
+  }, [_c('div', {
+    staticClass: "modal-dialog",
+    attrs: {
+      "role": "document"
+    }
+  }, [_c('div', {
+    staticClass: "modal-content"
+  }, [_vm._m(2), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [(_vm.errors.length > 0) ? _c('div', {
+    staticClass: "warn"
+  }, _vm._l((_vm.errors), function(error) {
+    return _c('li', [_vm._v(_vm._s(error))])
+  })) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', [_vm._v("Codigo")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.editProduct.codigo),
+      expression: "editProduct.codigo"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text"
+    },
+    domProps: {
+      "value": (_vm.editProduct.codigo)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.editProduct.codigo = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('label', [_vm._v("Nombre")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.editProduct.nombre),
+      expression: "editProduct.nombre"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text"
+    },
+    domProps: {
+      "value": (_vm.editProduct.nombre)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.editProduct.nombre = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('label', [_vm._v("Descripcion")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.editProduct.descripcion),
+      expression: "editProduct.descripcion"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text"
+    },
+    domProps: {
+      "value": (_vm.editProduct.descripcion)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.editProduct.descripcion = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('label', [_vm._v("Categoria")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.editProduct.categoria),
+      expression: "editProduct.categoria"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text"
+    },
+    domProps: {
+      "value": (_vm.editProduct.categoria)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.editProduct.categoria = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('label', [_vm._v("Talla")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.editProduct.talla),
+      expression: "editProduct.talla"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text"
+    },
+    domProps: {
+      "value": (_vm.editProduct.talla)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.editProduct.talla = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('label', [_vm._v("Precio")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.editProduct.precio),
+      expression: "editProduct.precio"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "number",
+      "step": "any"
+    },
+    domProps: {
+      "value": (_vm.editProduct.precio)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.editProduct.precio = $event.target.value
+      },
+      "blur": function($event) {
+        _vm.$forceUpdate()
+      }
+    }
+  }), _vm._v(" "), _c('label', [_vm._v("Fotografia")]), _vm._v(" "), _c('input', {
+    staticClass: "form-control",
+    attrs: {
+      "type": "file"
+    },
+    on: {
+      "change": function($event) {
+        _vm.addFile($event, 'foto')
+      }
+    }
+  })])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', {
+    staticClass: "btn btn-default",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal"
+    }
+  }, [_vm._v("Cancelar")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "button"
+    },
+    on: {
+      "click": _vm.updateProduct
+    }
   }, [_vm._v("Guardar")])])])])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("ID")]), _vm._v(" "), _c('th', [_vm._v("Codigo")]), _vm._v(" "), _c('th', [_vm._v("Nombre")]), _vm._v(" "), _c('th', [_vm._v("Descripcion")]), _vm._v(" "), _c('th', [_vm._v("Categoria")]), _vm._v(" "), _c('th', [_vm._v("Talla")]), _vm._v(" "), _c('th', [_vm._v("Foto")]), _vm._v(" "), _c('th', [_vm._v("Acciones")])])])
@@ -32132,6 +32401,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("×")])]), _vm._v(" "), _c('h4', {
     staticClass: "modal-title"
   }, [_vm._v("Alta de producto")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "modal-header"
+  }, [_c('button', {
+    staticClass: "close",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal",
+      "aria-label": "Close"
+    }
+  }, [_c('span', {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("×")])]), _vm._v(" "), _c('h4', {
+    staticClass: "modal-title"
+  }, [_vm._v("Edicion de producto")])])
 }]}
 module.exports.render._withStripped = true
 if (false) {
