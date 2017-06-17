@@ -17,6 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('catalog/categories',['uses' => 'CategoriesController@all' ]);
+Route::get('catalog/customers',['uses' => 'CustomersController@all' ]);
 Route::resource('category', 'CategoriesController', ['only' => [
 	'index',
 	'store',
@@ -38,3 +39,4 @@ Route::resource('sale', 'SalesController', ['only' => [
 ]]);
 Route::post('update/product/{product_id}', ['uses' => 'ProductsController@store']);
 Route::get('search/product', ['uses' => 'ProductsController@search']);
+Route::post('stock/product/{product_id}', ['uses' => 'ProductsController@storeStock']);

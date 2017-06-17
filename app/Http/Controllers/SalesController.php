@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Apart;
+use App\Models\Customer;
+use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleArticle;
 
@@ -15,7 +18,10 @@ class SalesController extends Controller
      */
     public function index()
     {
-        //
+        $sales = Sale::where('type', 'Sale')
+            ->paginate(20);
+
+        return $sales;
     }
 
     /**
@@ -44,6 +50,7 @@ class SalesController extends Controller
         $sale->user_id = 0;
         $sale->slug = substr($faker->md5, 0, 10);
         $sale->subtotal = $data['subtotal'];
+        $sale->type = $data['type'];
         $sale->save();
 
         foreach($data['products'] as $productSale){
@@ -53,6 +60,24 @@ class SalesController extends Controller
             $product->quantity = $productSale['cantidad'];
             $product->price = $productSale['precio'];
             $product->save();
+
+            $stock = Product::find($productSale['id']);
+            $stock->stock = $stock->stock - $productSale['cantidad'];
+            $stock->save();
+        }
+
+        if($data['type'] == 'Apart'){
+            $apart = new Apart();
+            $apart->sale_id = $sale->id;
+            $apart->status = 'Active';
+            $apart->rest = ($sale->subtotal*1.16) - $data['payment'];
+            if($data['customer']['type'] == 'New'){
+                $customer = Customer::create($data['customer']);
+                $apart->customer_id = $customer->id;
+            }else{
+                $apart->customer_id = $data['customer']['id'];
+            }
+            $apart->save();
         }
 
         return $sale;

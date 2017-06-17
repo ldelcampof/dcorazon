@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "vue-moment": "^2.0.2",
+    "vue2-autocomplete-js": "0.0.4",
     "vue2-filters": "^0.1.9"
   }
 }

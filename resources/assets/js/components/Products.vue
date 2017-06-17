@@ -13,6 +13,7 @@
                     <th>Descripcion</th>
                     <th>Categoria</th>
                     <th>Talla</th>
+                    <th>Existencia</th>
                     <th>Foto</th>
                     <th>Acciones</th>
                 </tr>
@@ -25,8 +26,10 @@
                     <td>{{ product.descripcion }}</td>
                     <td>{{ product.category.name }}</td>
                     <td>{{ product.talla }}</td>
+                    <td>{{ product.stock }}</td>
                     <td><img :src="product.foto"></td>
                     <td>
+                        <i class="fa fa-plus-circle" @click="addStock(product)"></i>
                         <i class="fa fa-pencil" @click="openEdit(product)"></i>
                         <i class="fa fa-trash" @click="remove(product)"></i>
                     </td>
@@ -59,6 +62,8 @@
                             <input class="form-control" v-model="product.talla" type="text"></input>
                             <label>Precio</label>
                             <input class="form-control" v-model="product.precio" type="number" step="any"></input>
+                            <label>Cantidad inicial</label>
+                            <input class="form-control" v-model="product.stock" type="number" step="any"></input>
                             <label>Fotografia</label>
                             <input class="form-control" type="file" @change="addFile($event, 'foto')"></input>
                         </div>
@@ -66,6 +71,29 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
                         <button type="button" class="btn btn-primary" @click="storeProduct">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" tabindex="-1" role="dialog" id="addStock">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Agregar stock</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="warn" v-if="errors.length > 0">
+                            <li v-for="error in errors">{{ error }}</li>
+                        </div>
+                        <div class="form-group">
+                            <label>Cantidad de stock</label>
+                            <input class="form-control" v-model="product.cantidad" type="text"></input>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="storeStock">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -125,11 +153,12 @@
                     foto: '',
                 },
                 product: {
-                    nombre: '',
-                    descripcion: '',
+                    cantidad: '',
                     categoria: '',
-                    talla: '',
+                    descripcion: '',
                     foto: '',
+                    nombre: '',
+                    talla: '',
                 },
                 products: [],
             }
@@ -137,6 +166,10 @@
         methods: {
             addFile(e, nombre){
                 this.data.append('file' + nombre, e.target.files[0])
+            },
+            addStock(product){
+                this.product = product;
+                $('#addStock').modal('show');
             },
             getCategories(){
                 axios.get(url + 'api/catalog/categories')
@@ -173,6 +206,27 @@
                             foto: '',
                         };
                         this.data = new FormData();
+                        $('.modal').modal('hide');
+                        this.getProducts();
+                    }).catch(errors => {
+                        if(typeof errors.response.data === 'object'){
+                            this.errors = _.flatten(_.toArray(errors.response.data))
+                        }else{
+                            this.errors = ['Algo salió mal'];
+                        }
+                    })
+            },
+            storeStock(){
+                axios.post(url + 'api/stock/product/' + this.product.id, this.product)
+                    .then(response => {
+                        this.product = {
+                            nombre: '',
+                            descripcion: '',
+                            categoria: '',
+                            cantidad: '',
+                            talla: '',
+                            foto: '',
+                        };
                         $('.modal').modal('hide');
                         this.getProducts();
                     }).catch(errors => {

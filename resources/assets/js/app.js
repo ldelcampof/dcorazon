@@ -18,10 +18,13 @@ require('./bootstrap');
  */
 Vue.use(require('vue-moment'), { moment });
 Vue.use(require('vue2-filters'));
+Vue.component('autocomplete', require('vue2-autocomplete-js'));
 
 Vue.component('category', require('./components/Categories.vue'));
-Vue.component('create-sale', require('./components/createSale.vue'));
+Vue.component('create-apart', require('./components/CreateApart.vue'));
+Vue.component('create-sale', require('./components/CreateSale.vue'));
 Vue.component('products', require('./components/Products.vue'));
+Vue.component('sales', require('./components/Sales.vue'));
 
 const app = new Vue({
     el: '#app'

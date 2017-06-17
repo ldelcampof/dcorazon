@@ -1,6 +1,19 @@
 <template>
 	<div class="container">
-		<h2>Crear venta</h2>
+		<h2>Crear apartado</h2>
+		<label>Cliente</label>
+		<ul class="nav nav-pills">
+		    <li role="presentation" @click="setActive('Exists')"><a href="#">Existente</a></li>
+		    <li role="presentation" @click="setActive('New')"><a href="#">Nuevo</a></li>
+		</ul>
+		<div v-if="sale.customer.type == 'Exists'">
+			<label>Nombre de cliente existente</label>
+			<autocomplete :url="url + '/api/catalog/customers'" anchor="name" :on-select="getCustomerData" class-name="form-control"></autocomplete>
+		</div>
+		<div v-if="sale.customer.type == 'New'">
+			<label>Nombre de cliente nuevo</label>
+			<input class="form-control" v-model="sale.customer.name"></input>
+		</div>
 		<label>Codigo de roducto</label>
 		<input class="form-control" type="text" v-model="codigo"></input>
 		<button @click='searchProducts'>Agregar</button>
@@ -55,6 +68,8 @@
 				</tr>
 			</tfoot>
 		</table>
+		<label>Abono para apartado</label>
+		<input class="form-control" type="number" step="any" v-model="sale.payment"></input>
 		<button class="btn btn-success pull-right" @click="storeSale">Generar</button>
 	</div>
 </template>
@@ -65,12 +80,18 @@
 			return {
 				codigo: '',
 				sale: {
+					customer: {
+						id: '',
+						name: '',
+						type: '',
+					},
 					products: [],
 					iva: 0,
 					subtotal: 0,
 					total: 0,
-					type: 'Sale',
+					type: 'Apart',
 				},
+				url: window.url,
 			}
 		},
 		methods: {
@@ -91,6 +112,9 @@
 					this.sale.products.splice(index, 1);
 				}
 				this.calculateTotal();
+			},
+			getCustomerData(item){
+				this.sale.customer.id = item.id;
 			},
 			searchProducts(){
 				axios.get(url + 'api/search/product?s=' + this.codigo)
@@ -121,14 +145,23 @@
 						alert('No se encontro el producto');
 					});
 			},
+			setActive(type){
+				this.sale.customer.type = type;
+			},
 			storeSale(){
 				axios.post(url + 'api/sale', this.sale)
 					.then(response => {
 						this.sale = {
+							customer: {
+								id: '',
+								name: '',
+								type: '',
+							},
 							products: [],
 							iva: 0,
 							subtotal: 0,
 							total: 0,
+							type: 'Apart',
 						}
 					}).catch(error => {
 
@@ -136,6 +169,10 @@
 			},
 		},
 		mounted() {
+			$('.nav-pills li').on('click', function(){
+				$('.nav-pills li').removeClass('active');
+				$(this).addClass('active');
+			})
 		},
 	}
 </script>

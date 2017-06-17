@@ -16,6 +16,7 @@ class Product extends Model
 		'precio',
 		'foto',
 		'talla',
+        'stock',
 		'category_id'
 	];
 

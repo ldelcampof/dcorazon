@@ -16,6 +16,9 @@ Route::get('/', function () {
 });
 
 
+Route::get('aparts', function(){ return view('app.aparts'); });
+Route::get('categories', function(){ return view('app.category'); });
+Route::get('create-apart', function(){ return view('app.aparts'); });
 Route::get('create-sale', function(){ return view('app.createSale'); });
 Route::get('products', function(){ return view('app.products'); });
-Route::get('categories', function(){ return view('app.category'); });
+Route::get('sales', function(){ return view('app.sales'); });

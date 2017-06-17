@@ -51,6 +51,21 @@ class ProductsController extends Controller
         return $product;
 
     }
+    /**
+     * Store a new stock of products.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeStock(Request $request, $product_id)
+    {
+        $data = $request->all();
+        $product = Product::find($product_id);
+        $product->stock = $product->stock + $data['cantidad'];
+        $product->save();
+
+        return $product;
+    }
 
     /**
      * Display the specified resource.

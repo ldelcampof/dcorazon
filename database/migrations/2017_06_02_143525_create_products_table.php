@@ -23,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->string('foto');
             $table->string('slug',10);
             $table->double('precio',16,2);
+            $table->integer('stock')->default(0);
 
             $table->nullabletimestamps();
             $table->softDeletes();
