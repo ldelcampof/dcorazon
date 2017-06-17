@@ -16,13 +16,16 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="product in sale.products">
+				<tr v-for="(product, index) in sale.products">
 					<td>{{ product.codigo }}</td>
 					<td>{{ product.nombre }}</td>
 					<td>{{ product.descripcion }}</td>
 					<td>{{ product.cantidad }}</td>
 					<td>{{ product.precio | currency('$') }}</td>
-					<td>{{ product.total | currency('$') }}</td>
+					<td>
+						{{ product.total | currency('$') }}
+						<i class="fa fa-trash btn-hide" @click="deleteArticle(index, product)"></i>
+					</td>
 				</tr>
 			</tbody>
 			<tfoot>
@@ -79,6 +82,14 @@
 				}
 				this.sale.iva = this.sale.subtotal * .16;
 				this.sale.total = this.sale.subtotal * 1.16;
+			},
+			deleteArticle(index, product){
+				this.sale.products[index].cantidad--;
+				this.sale.products[index].total = this.sale.products[index].cantidad * this.sale.products[index].precio;
+				if(this.sale.products[index].cantidad <= 0){
+					this.sale.products.splice(index, 1);
+				}
+				this.calculateTotal();
 			},
 			searchProducts(){
 				axios.get(url + 'api/search/product?s=' + this.codigo)

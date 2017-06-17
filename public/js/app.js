@@ -42477,6 +42477,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
@@ -42501,6 +42504,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			}
 			this.sale.iva = this.sale.subtotal * .16;
 			this.sale.total = this.sale.subtotal * 1.16;
+		},
+		deleteArticle: function deleteArticle(index, product) {
+			this.sale.products[index].cantidad--;
+			this.sale.products[index].total = this.sale.products[index].cantidad * this.sale.products[index].precio;
+			if (this.sale.products[index].cantidad <= 0) {
+				this.sale.products.splice(index, 1);
+			}
+			this.calculateTotal();
 		},
 		searchProducts: function searchProducts() {
 			var _this = this;
@@ -42615,8 +42626,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Agregar")]), _vm._v(" "), _c('table', {
     staticClass: "table table-striped"
-  }, [_vm._m(0), _vm._v(" "), _c('tbody', _vm._l((_vm.sale.products), function(product) {
-    return _c('tr', [_c('td', [_vm._v(_vm._s(product.codigo))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(product.nombre))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(product.descripcion))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(product.cantidad))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm._f("currency")(product.precio, '$')))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm._f("currency")(product.total, '$')))])])
+  }, [_vm._m(0), _vm._v(" "), _c('tbody', _vm._l((_vm.sale.products), function(product, index) {
+    return _c('tr', [_c('td', [_vm._v(_vm._s(product.codigo))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(product.nombre))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(product.descripcion))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(product.cantidad))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm._f("currency")(product.precio, '$')))]), _vm._v(" "), _c('td', [_vm._v("\n\t\t\t\t\t" + _vm._s(_vm._f("currency")(product.total, '$')) + "\n\t\t\t\t\t"), _c('i', {
+      staticClass: "fa fa-trash btn-hide",
+      on: {
+        "click": function($event) {
+          _vm.deleteArticle(index, product)
+        }
+      }
+    })])])
   })), _vm._v(" "), _c('tfoot', [_c('tr', [_c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th', [_vm._v("Subtotal")]), _vm._v(" "), _c('th', [_vm._v(_vm._s(_vm._f("currency")(_vm.sale.subtotal, '$')))])]), _vm._v(" "), _c('tr', [_c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th', [_vm._v("IVA")]), _vm._v(" "), _c('th', [_vm._v(_vm._s(_vm._f("currency")(_vm.sale.iva, '$')))])]), _vm._v(" "), _c('tr', [_c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th'), _vm._v(" "), _c('th', [_vm._v("Total")]), _vm._v(" "), _c('th', [_vm._v(_vm._s(_vm._f("currency")(_vm.sale.total, '$')))])])])], 1), _vm._v(" "), _c('button', {
     staticClass: "btn btn-success pull-right",
     on: {
