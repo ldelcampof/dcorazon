@@ -16,6 +16,6 @@ Route::get('/', function () {
 });
 
 
-Route::get('products', function(){
-	return view('app.products');
-});
+Route::get('create-sale', function(){ return view('app.createSale'); });
+Route::get('products', function(){ return view('app.products'); });
+Route::get('categories', function(){ return view('app.category'); });

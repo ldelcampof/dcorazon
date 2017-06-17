@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+	use SoftDeletes;
 
 	protected $fillable = [
 		'nombre',
@@ -14,7 +16,7 @@ class Product extends Model
 		'precio',
 		'foto',
 		'talla',
-		'categoria'
+		'category_id'
 	];
 
     public static function getRules(){
@@ -26,5 +28,9 @@ class Product extends Model
     	$messages = ['nombre.required' => 'El nombre del producto es requerido porque yolo'];
 
     	return $messages;
+    }
+
+    public function category(){
+    	return $this->belongsTo(Category::class);
     }
 }

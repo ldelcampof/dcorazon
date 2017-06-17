@@ -3,6 +3,7 @@
 <head>
 	<title>DCorazon</title>
 	<meta name="csrf-token" content="{{ csrf_token() }}">
+	<script src="https://use.fontawesome.com/7dbcd6e557.js"></script>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
 </head>
 <body>

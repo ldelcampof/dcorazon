@@ -16,7 +16,12 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::get('catalog/categories',['uses' => 'CategoriesController@all' ]);
+Route::resource('category', 'CategoriesController', ['only' => [
+	'index',
+	'store',
+	'destroy',
+]]);
 Route::resource('product', 'ProductsController', ['only' => [
 	'index',
 	'store',
@@ -24,3 +29,12 @@ Route::resource('product', 'ProductsController', ['only' => [
 	'destroy',
 	'show'
 ]]);
+Route::resource('sale', 'SalesController', ['only' => [
+	'index',
+	'store',
+	'update',
+	'destroy',
+	'show'
+]]);
+Route::post('update/product/{product_id}', ['uses' => 'ProductsController@store']);
+Route::get('search/product', ['uses' => 'ProductsController@search']);

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Product;
-use Validator;
+use App\Models\Sale;
+use App\Models\SaleArticle;
 
-class ProductsController extends Controller
+class SalesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +15,17 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')
-            ->paginate(20);
+        //
+    }
 
-        return $products;
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
     }
 
     /**
@@ -27,28 +34,28 @@ class ProductsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $product_id = null)
+    public function store(Request $request)
     {
         $data = $request->all();
-        $dataProduct = (array) json_decode($data['product']);
         $faker = \Faker\Factory::create();
 
-        Validator::make($dataProduct, Product::getRules(), Product::getMessages())->validate();
+        $sale = new Sale();
+        $sale->discount = 0;
+        $sale->user_id = 0;
+        $sale->slug = substr($faker->md5, 0, 10);
+        $sale->subtotal = $data['subtotal'];
+        $sale->save();
 
-        $destinationPath = '/public/uploads/productos';
-        $file = $request->filefoto->store($destinationPath);
-        $path = str_replace('public/', 'storage/', $file);
-
-        if($product_id == null){
-            $product = new Product($dataProduct);
-        }else{
-            $product = Product::find($product_id);
+        foreach($data['products'] as $productSale){
+            $product = new SaleArticle();
+            $product->sale_id = $sale->id;
+            $product->product_id = $productSale['id'];
+            $product->quantity = $productSale['cantidad'];
+            $product->price = $productSale['precio'];
+            $product->save();
         }
-        $product->slug = substr($faker->md5,0,10);
-        $product->foto = $path;
-        $product->save();
 
-        return $product;
+        return $sale;
 
     }
 
@@ -94,20 +101,6 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        Product::destroy($id);
-    }
-    /**
-     * Busca un producto por su codigo
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request)
-    {
-        $data = $request->all();
-        $product = Product::with('category')
-            ->where('codigo', 'LIKE', $data['s'])
-            ->first();
-
-        return $product;
+        //
     }
 }
