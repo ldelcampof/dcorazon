@@ -2,6 +2,12 @@
 	<div class="container">
 		<h2>Crear apartado</h2>
 		<label>Cliente</label>
+		<div class="alerts" v-if="errors.length > 0">
+			<li v-for="error in errors" class="alert alert-danger">{{ error }}</li>
+		</div>
+		<div class="alerts" v-if="success.length > 0">
+			<li v-for="error in success" class="alert alert-success">{{ error }}</li>
+		</div>
 		<ul class="nav nav-pills">
 		    <li role="presentation" @click="setActive('Exists')"><a href="#">Existente</a></li>
 		    <li role="presentation" @click="setActive('New')"><a href="#">Nuevo</a></li>
@@ -14,7 +20,7 @@
 			<label>Nombre de cliente nuevo</label>
 			<input class="form-control" v-model="sale.customer.name"></input>
 		</div>
-		<label>Codigo de roducto</label>
+		<label>Codigo de producto</label>
 		<input class="form-control" type="text" v-model="codigo"></input>
 		<button @click='searchProducts'>Agregar</button>
 		<table class="table table-striped">
@@ -79,6 +85,7 @@
 		data(){
 			return {
 				codigo: '',
+				errors: [],
 				sale: {
 					customer: {
 						id: '',
@@ -91,6 +98,7 @@
 					total: 0,
 					type: 'Apart',
 				},
+				success: [],
 				url: window.url,
 			}
 		},
@@ -120,24 +128,27 @@
 				axios.get(url + 'api/search/product?s=' + this.codigo)
 					.then(response => {
 						if(response.data != ''){
-							var found = 'empty';
-							for(var i = 0; i < this.sale.products.length; i++){
-								if(this.sale.products[i].id == response.data.id){
-									found = i;
-									i = this.sale.products.length;
+							if(response.data.stock > 0){
+								var found = 'empty';
+								for(var i = 0; i < this.sale.products.length; i++){
+									if(this.sale.products[i].id == response.data.id){
+										found = i;
+										i = this.sale.products.length;
+									}
 								}
-							}
-
-							if(found == 'empty'){
-								response.data.cantidad = 1;
-								response.data.total = response.data.cantidad * response.data.precio;
-								this.sale.products.push(response.data);
+								if(found == 'empty'){
+									response.data.cantidad = 1;
+									response.data.total = response.data.cantidad * response.data.precio;
+									this.sale.products.push(response.data);
+								}else{
+									this.sale.products[found].cantidad++;
+									this.sale.products[found].total = this.sale.products[found].cantidad * this.sale.products[found].precio;
+								}
+								this.codigo = '';
+								this.calculateTotal();
 							}else{
-								this.sale.products[found].cantidad++;
-								this.sale.products[found].total = this.sale.products[found].cantidad * this.sale.products[found].precio;
+								alert('No queda mas de este producto en inventario');
 							}
-							this.codigo = '';
-							this.calculateTotal();
 						}else{
 							alert('No se encontro el producto');
 						}
@@ -149,23 +160,33 @@
 				this.sale.customer.type = type;
 			},
 			storeSale(){
-				axios.post(url + 'api/sale', this.sale)
-					.then(response => {
-						this.sale = {
-							customer: {
-								id: '',
-								name: '',
-								type: '',
-							},
-							products: [],
-							iva: 0,
-							subtotal: 0,
-							total: 0,
-							type: 'Apart',
-						}
-					}).catch(error => {
-
-					});
+				if(this.sale.customer.id == '' && this.sale.customer.name == ''){
+					alert('No has seleccionado un cliente');
+				}else{
+					axios.post(url + 'api/sale', this.sale)
+						.then(response => {
+							this.sale = {
+								customer: {
+									id: '',
+									name: '',
+									type: '',
+								},
+								products: [],
+								iva: 0,
+								subtotal: 0,
+								total: 0,
+								type: 'Apart',
+							}
+							$('.nav-pills li').removeClass('active');
+							this.success = ['El apartado se registro correctamente'];
+						}).catch(error => {
+							if(typeof error.response.data === 'object'){
+								this.errors = _.flatten(_.toArray(error.response.data));
+							}else{
+								this.errors = ['Algo salio mal'];
+							}
+						});
+				}
 			},
 		},
 		mounted() {

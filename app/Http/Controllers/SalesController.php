@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Apart;
 use App\Models\Customer;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleArticle;
@@ -19,6 +20,7 @@ class SalesController extends Controller
     public function index()
     {
         $sales = Sale::where('type', 'Sale')
+            ->with('articles','articles.product')
             ->paginate(20);
 
         return $sales;
@@ -71,6 +73,7 @@ class SalesController extends Controller
             $apart->sale_id = $sale->id;
             $apart->status = 'Active';
             $apart->rest = ($sale->subtotal*1.16) - $data['payment'];
+            Payment::create(['sale_id' => $sale->id, 'ammount' => $data['payment']]);
             if($data['customer']['type'] == 'New'){
                 $customer = Customer::create($data['customer']);
                 $apart->customer_id = $customer->id;
@@ -126,6 +129,6 @@ class SalesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Sale::destroy($id);
     }
 }

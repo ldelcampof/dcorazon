@@ -16,12 +16,24 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::resource('apart', 'ApartsController', ['only' => [
+	'index',
+	'destroy',
+	'show'
+]]);
 Route::get('catalog/categories',['uses' => 'CategoriesController@all' ]);
 Route::get('catalog/customers',['uses' => 'CustomersController@all' ]);
 Route::resource('category', 'CategoriesController', ['only' => [
 	'index',
 	'store',
 	'destroy',
+]]);
+Route::resource('payment', 'PaymentsController', ['only' => [
+	'index',
+	'store',
+	'update',
+	'destroy',
+	'show'
 ]]);
 Route::resource('product', 'ProductsController', ['only' => [
 	'index',

@@ -1,4 +1,4 @@
 @extends('app.layout')
 @section('content')
-	<aparts></aparts>
+	<create-apart></create-apart>
 @stop

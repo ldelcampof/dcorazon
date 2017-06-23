@@ -20,6 +20,7 @@ Vue.use(require('vue-moment'), { moment });
 Vue.use(require('vue2-filters'));
 Vue.component('autocomplete', require('vue2-autocomplete-js'));
 
+Vue.component('aparts', require('./components/Aparts.vue'));
 Vue.component('category', require('./components/Categories.vue'));
 Vue.component('create-apart', require('./components/CreateApart.vue'));
 Vue.component('create-sale', require('./components/CreateSale.vue'));

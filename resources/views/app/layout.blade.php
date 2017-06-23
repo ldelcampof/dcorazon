@@ -7,6 +7,13 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
 </head>
 <body>
+	<nav>
+		<div class="links">
+            <a href="{{ url('/products') }}">Productos</a>
+            <a href="{{ url('/sales') }}">Ventas</a>
+            <a href="{{ url('/aparts') }}">Apartados</a>
+        </div>
+	</nav>
 	<div id="app">
 		@yield('content')
 	</div>
